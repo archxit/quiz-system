@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <!-- Profile -->
+      <div class="profile-block">
+        <div class="avatar-wrap">
+          <img src="https://i.pravatar.cc/56" alt="avatar" class="avatar" />
+          <span class="online-dot"></span>
+        </div>
+        <div class="profile-info">
+          <span class="profile-name" id="profile-username">Player</span>
+          <span class="status-label"><span class="dot-green"></span>Online</span>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <button class="analytics-btn">
+        <span class="btn-icon">📊</span> Analytics
+      </button>
+
+      <!-- Leaderboard -->
+      <div class="leaderboard-panel">
+        <div class="lb-header">
+          <span><span class="btn-icon">🏆</span> Leaderboard</span>
+          <span class="lb-toggle">&#8743;</span>
+        </div>
+        <table class="lb-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Name</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="lb-body"></tbody>
+        </table>
+      </div>
+
+      <div class="sidebar-spacer"></div>
+
+      <!-- Logout -->
+      <button class="logout-btn" id="logout-btn" onclick="logout()">
+        Logout &#8594;
+      </button>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+      <!-- Giant heading -->
+      <h1 class="quiz-heading">QUIZ</h1>
+
+      <!-- Question card -->
+      <div class="question-card">
+
+        <div id="quiz-active">
+          <p class="question-text" id="question-text">Connecting...</p>
+
+          <div class="options-list" id="options"></div>
+        </div>
+
+        <!-- Finished state -->
+        <div id="finished" style="display:none;">
+          <h2 class="finish-title">&#127881; Quiz Finished!</h2>
+          <p class="finish-sub">Your final score: <strong id="final-score"></strong></p>
+          <!-- <button class="option-btn play-again" onclick="window.location.href='index.html'">
+            Play Again
+          </button> -->
+        </div>
+
+        <!-- Score + progress -->
+        <div class="score-row">
+          <span class="score-label">Your Score: <strong id="score">0</strong></span>
+          <span class="progress-percent" id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-bar"></div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/quiz.js"></script>
+</body>
+</html>

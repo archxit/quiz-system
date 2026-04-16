@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Portal</title>
+  <link rel="stylesheet" href="css/landingStyle.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-left">
+      <a href="#" class="nav-link">CONTACT</a>
+      <a href="#" class="nav-link">ABOUT</a>
+    </div>
+    <div class="nav-actions">
+      <button class="nav-btn filled" onclick="openModal('register')">REGISTER</button>
+      <button class="nav-btn outline" onclick="openModal('login')">LOG IN</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1 class="hero-title">QUIZ<br>PORTAL</h1>
+
+    <div class="hero-bottom">
+      <div class="hero-left">
+        <p class="hero-desc">
+          Test your knowledge with our interactive quizzes designed to challenge and educate.
+          Engage in a visually appealing and dynamic quiz experience that makes learning fun and rewarding.
+        </p>
+        <button class="start-btn" onclick="openModal('login')">START QUIZ</button>
+      </div>
+      <div class="hero-image-wrap">
+        <img class="hero-image"
+          src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="Person reading" />
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL OVERLAY -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+      <h2 id="modal-title">Welcome Back</h2>
+      <p class="modal-sub" id="modal-sub">Login to continue your quiz</p>
+
+      <div class="tabs">
+        <button class="tab active" id="tab-login" onclick="switchTab('login')">Login</button>
+        <button class="tab" id="tab-register" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <input id="username" type="text" placeholder="Username" maxlength="20" />
+      <input id="password" type="password" placeholder="Password" maxlength="50" />
+
+      <p class="error-msg" id="error"></p>
+      <p class="success-msg" id="success"></p>
+
+      <button class="modal-btn" id="action-btn" onclick="handleAction()">Login &#8594;</button>
+    </div>
+  </div>
+
+  <script>
+    let currentTab = "login";
+
+    function openModal(tab) {
+      document.getElementById("modal-overlay").classList.add("active");
+      switchTab(tab);
+    }
+    function closeModal() {
+      document.getElementById("modal-overlay").classList.remove("active");
+    }
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById("modal-overlay")) closeModal();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById("tab-login").classList.toggle("active", tab === "login");
+      document.getElementById("tab-register").classList.toggle("active", tab === "register");
+      document.getElementById("action-btn").textContent = tab === "login" ? "Login →" : "Register →";
+      document.getElementById("modal-title").textContent = tab === "login" ? "Welcome Back" : "Create Account";
+      document.getElementById("modal-sub").textContent = tab === "login" ? "Login to continue your quiz" : "Register to get started";
+      document.getElementById("error").textContent = "";
+      document.getElementById("success").textContent = "";
+    }
+
+    async function handleAction() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const error = document.getElementById("error");
+      const success = document.getElementById("success");
+      error.textContent = ""; success.textContent = "";
+
+      if (!username || !password) {
+        error.textContent = "Enter both username and password!";
+        return;
+      }
+
+      if (currentTab === "register") {
+        const ws = new WebSocket("ws://localhost:8080");
+        ws.onopen = () => ws.send(JSON.stringify({ type: "REGISTER", username, password }));
+        ws.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          ws.close();
+          if (msg.type === "REGISTER_SUCCESS") {
+            success.textContent = "✅ Registered! You can now login.";
+            switchTab("login");
+          } else {
+            error.textContent = "❌ " + msg.message;
+          }
+        };
+        ws.onerror = () => { error.textContent = "❌ Could not connect to server."; };
+      } else {
+        localStorage.setItem("username", username);
+        localStorage.setItem("password", password);
+        window.location.href = "quiz.html";
+      }
+    }
+
+    document.addEventListener("keypress", (e) => { if (e.key === "Enter") handleAction(); });
+  </script>
+</body>
+
+</html>

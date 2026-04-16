@@ -227,7 +227,7 @@ Register → Login → WebSocket AUTH → Receive Question → Answer → Score 
 
 ## 👨‍💻 Author
 
-**Your Name**
+Archit Srivastava
 
 ---
 
